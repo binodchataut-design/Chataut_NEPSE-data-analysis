@@ -546,68 +546,81 @@ export function StockResearchView({
 
           {/* Fundamental Scorecard */}
           <div className="bg-[#111722] border border-slate-800 rounded-lg p-4 font-mono text-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-amber-400" />
-                <h3 className="font-bold text-slate-200">
-                  FUNDAMENTAL SCORECARD: {fundScore.totalScore}/100
-                </h3>
+            {fundUnavailableReason ? (
+              <div className="py-8 text-center">
+                <div className="text-sm font-semibold text-amber-400">Fundamental data unavailable</div>
+                <div className="text-xs text-slate-500 mt-1">{fundUnavailableReason}</div>
               </div>
-              <span className="px-2 py-0.5 rounded text-[11px] bg-amber-950 border border-amber-800 text-amber-300 font-bold">
-                GRADE {fundScore.grade}
-              </span>
-            </div>
+            ) : fundScore && fundMetrics ? (
+              <>
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-amber-400" />
+                    <h3 className="font-bold text-slate-200">
+                      FUNDAMENTAL SCORECARD: {fundScore.totalScore}/100
+                    </h3>
+                  </div>
+                  <span className="px-2 py-0.5 rounded text-[11px] bg-amber-950 border border-amber-800 text-amber-300 font-bold">
+                    GRADE {fundScore.grade}
+                  </span>
+                </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase">Profitability (20/25)</span>
-                <div className="text-sm font-bold text-slate-200 mt-1">ROE: {fundMetrics.roe}%</div>
-                <div className="text-[10px] text-slate-400">ROA: {fundMetrics.roa}%</div>
-              </div>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
+                    <span className="text-[10px] text-slate-400 uppercase">Profitability (20/25)</span>
+                    <div className="text-sm font-bold text-slate-200 mt-1">ROE: {fundMetrics.roe}%</div>
+                    <div className="text-[10px] text-slate-400">ROA: {fundMetrics.roa}%</div>
+                  </div>
 
-              <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase">Growth (18/25)</span>
-                <div className="text-sm font-bold text-emerald-400 mt-1">+{fundMetrics.netProfitGrowthYoY}% Profit</div>
-                <div className="text-[10px] text-slate-400">+{fundMetrics.epsGrowthYoY}% EPS YoY</div>
-              </div>
+                  <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
+                    <span className="text-[10px] text-slate-400 uppercase">Growth (18/25)</span>
+                    <div className="text-sm font-bold text-emerald-400 mt-1">+{fundMetrics.netProfitGrowthYoY}% Profit</div>
+                    <div className="text-[10px] text-slate-400">+{fundMetrics.epsGrowthYoY}% EPS YoY</div>
+                  </div>
 
-              <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase">Valuation (17/25)</span>
-                <div className="text-sm font-bold text-slate-200 mt-1">P/E: {fundMetrics.peRatio}x</div>
-                <div className="text-[10px] text-slate-400">P/B: {fundMetrics.pbRatio}x (BV: Rs. {fundMetrics.bookValuePerShare})</div>
-              </div>
+                  <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
+                    <span className="text-[10px] text-slate-400 uppercase">Valuation (17/25)</span>
+                    <div className="text-sm font-bold text-slate-200 mt-1">P/E: {fundMetrics.peRatio}x</div>
+                    <div className="text-[10px] text-slate-400">P/B: {fundMetrics.pbRatio}x (BV: Rs. {fundMetrics.bookValuePerShare})</div>
+                  </div>
 
-              <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase">Health (19/25)</span>
-                <div className="text-sm font-bold text-slate-200 mt-1">D/E: {fundMetrics.debtToEquity}x</div>
-                <div className="text-[10px] text-slate-400">Current Ratio: {fundMetrics.currentRatio}</div>
-              </div>
-            </div>
+                  <div className="bg-[#0b0f17] p-2.5 rounded border border-slate-800">
+                    <span className="text-[10px] text-slate-400 uppercase">Health (19/25)</span>
+                    <div className="text-sm font-bold text-slate-200 mt-1">D/E: {fundMetrics.debtToEquity}x</div>
+                    <div className="text-[10px] text-slate-400">Current Ratio: {fundMetrics.currentRatio}</div>
+                  </div>
+                </div>
 
-            {/* Strengths & Risks */}
-            <div className="space-y-2">
-              <div className="p-2.5 bg-emerald-950/20 border border-emerald-900/40 rounded">
-                <div className="text-[10px] font-bold text-emerald-400 uppercase mb-1">Key Strengths</div>
-                <ul className="text-[11px] text-slate-300 space-y-0.5">
-                  {fundScore.keyStrengths.map((s, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-emerald-400">✓</span> {s}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                {/* Strengths & Risks */}
+                <div className="space-y-2">
+                  <div className="p-2.5 bg-emerald-950/20 border border-emerald-900/40 rounded">
+                    <div className="text-[10px] font-bold text-emerald-400 uppercase mb-1">Key Strengths</div>
+                    <ul className="text-[11px] text-slate-300 space-y-0.5">
+                      {fundScore.keyStrengths.map((s, i) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-emerald-400">✓</span> {s}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-              <div className="p-2.5 bg-rose-950/20 border border-rose-900/40 rounded">
-                <div className="text-[10px] font-bold text-rose-400 uppercase mb-1">Key Risks &amp; Watch-outs</div>
-                <ul className="text-[11px] text-slate-300 space-y-0.5">
-                  {fundScore.keyRisks.map((r, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-rose-400">⚠</span> {r}
-                    </li>
-                  ))}
-                </ul>
+                  <div className="p-2.5 bg-rose-950/20 border border-rose-900/40 rounded">
+                    <div className="text-[10px] font-bold text-rose-400 uppercase mb-1">Key Risks &amp; Watch-outs</div>
+                    <ul className="text-[11px] text-slate-300 space-y-0.5">
+                      {fundScore.keyRisks.map((r, i) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-rose-400">⚠</span> {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="py-8 text-center text-slate-500">
+                Loading fundamental data...
               </div>
-            </div>
+            )}
           </div>
         </div>
       )}

@@ -30,6 +30,7 @@ import { dataService } from '../../services/dataService';
 export const HistoricalResearchLab: React.FC = () => {
   const [config, setConfig] = useState<ResearchRunConfig>(() => {
     const defaultPresets = SignalConditionEngine.getStandardConditionPresets();
+    const firstPreset = defaultPresets && defaultPresets.length > 0 ? defaultPresets[0] : null;
     return {
       runId: 'RUN-2026-000001',
       createdAt: new Date().toISOString(),
@@ -63,8 +64,21 @@ export const HistoricalResearchLab: React.FC = () => {
         capitalGainsTaxPercent: 5.0,
         slippagePercent: 0.1
       },
-      conditionTree: defaultPresets[0].tree,
-      conditionLabel: defaultPresets[0].label
+      conditionTree: firstPreset?.tree || {
+        operator: 'AND',
+        conditions: [
+          {
+            id: 'c-rsi-30',
+            indicator: 'RSI',
+            field: 'rsi',
+            comparator: '<',
+            thresholdType: 'VALUE',
+            thresholdValue: 30,
+            description: 'RSI(14) < 30'
+          }
+        ]
+      },
+      conditionLabel: firstPreset?.label || 'RSI(14) < 30 (Oversold)'
     };
   });
 

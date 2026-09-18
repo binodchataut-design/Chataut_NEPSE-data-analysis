@@ -64,7 +64,7 @@ export class SupabaseDataProvider implements IMarketDataProvider, IStockDataProv
 
     try {
       const { data, error } = await supabase
-        .from('equity_companies')
+        .from('companies')
         .select('symbol, name, sector, status')
         .order('symbol', { ascending: true });
 
@@ -77,7 +77,7 @@ export class SupabaseDataProvider implements IMarketDataProvider, IStockDataProv
 
       this.isConnected = true;
       const now = new Date().toISOString();
-      const mapped: CompanyMaster[] = (data || []).map((row) => ({
+      const mapped: CompanyMaster[] = (data || []).map((row: any) => ({
         id: row.symbol,
         symbol: row.symbol,
         company_name: row.name || row.symbol,

@@ -112,8 +112,22 @@ class HistoricalResearchService {
     };
 
     const conditionPresets = SignalConditionEngine.getStandardConditionPresets();
-    const conditionTree = configInput.conditionTree || conditionPresets[0].tree;
-    const conditionLabel = configInput.conditionLabel || conditionPresets[0].label;
+    const defaultPreset = conditionPresets && conditionPresets.length > 0 ? conditionPresets[0] : null;
+    const conditionTree = configInput.conditionTree || defaultPreset?.tree || {
+      operator: 'AND',
+      conditions: [
+        {
+          id: 'c-rsi-30',
+          indicator: 'RSI',
+          field: 'rsi',
+          comparator: '<',
+          thresholdType: 'VALUE',
+          thresholdValue: 30,
+          description: 'RSI(14) < 30'
+        }
+      ]
+    };
+    const conditionLabel = configInput.conditionLabel || defaultPreset?.label || 'RSI(14) < 30 (Oversold)';
 
     const runConfig: ResearchRunConfig = {
       runId,

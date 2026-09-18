@@ -19,6 +19,7 @@ import { RiskView } from './components/risk/RiskView';
 import { TradeJournalView } from './components/research/TradeJournalView';
 import { DataArchitectureView } from './components/data/DataArchitectureView';
 import { SettingsView } from './components/settings/SettingsView';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { setupService } from './services/setupService';
 import { riskService } from './services/riskService';
 import { initializeLiveDataCaches } from './data/liveBarsCache';
@@ -146,80 +147,128 @@ export default function App() {
         {/* Scrollable View Container */}
         <main className="flex-1 overflow-y-auto bg-[#090d15] scrollbar-thin scrollbar-thumb-slate-800">
           {activeSection === 'dashboard' && (
-            <DashboardView
-              onSelectStock={handleSelectStock}
-              onNavigate={handleNavigate}
-            />
+            <ErrorBoundary viewName="DashboardView">
+              <DashboardView
+                onSelectStock={handleSelectStock}
+                onNavigate={handleNavigate}
+              />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'stocks' && (
-            <StockResearchView
-              selectedSymbol={selectedSymbol}
-              onSelectStock={handleSelectStock}
-              onNavigateToWatchlist={() => setActiveSection('watchlist')}
-            />
+            <ErrorBoundary viewName="StockResearchView">
+              <StockResearchView
+                selectedSymbol={selectedSymbol}
+                onSelectStock={handleSelectStock}
+                onNavigateToWatchlist={() => setActiveSection('watchlist')}
+              />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'market' && (
-            <MarketView onSelectStock={handleSelectStock} />
+            <ErrorBoundary viewName="MarketView">
+              <MarketView onSelectStock={handleSelectStock} />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'technical' && (
-            <TechnicalAnalysisView
-              onSelectStock={handleSelectStock}
-              onNavigateToBacktest={() => setActiveSection('backtest')}
-            />
+            <ErrorBoundary viewName="TechnicalAnalysisView">
+              <TechnicalAnalysisView
+                onSelectStock={handleSelectStock}
+                onNavigateToBacktest={() => setActiveSection('backtest')}
+              />
+            </ErrorBoundary>
           )}
 
-          {activeSection === 'backtest' && <HistoricalResearchLab />}
+          {activeSection === 'backtest' && (
+            <ErrorBoundary viewName="HistoricalResearchLab">
+              <HistoricalResearchLab />
+            </ErrorBoundary>
+          )}
 
-          {activeSection === 'features' && <FeatureProbabilityLab />}
+          {activeSection === 'features' && (
+            <ErrorBoundary viewName="FeatureProbabilityLab">
+              <FeatureProbabilityLab />
+            </ErrorBoundary>
+          )}
 
-          {activeSection === 'validation' && <RobustnessDataQualityView />}
+          {activeSection === 'validation' && (
+            <ErrorBoundary viewName="RobustnessDataQualityView">
+              <RobustnessDataQualityView />
+            </ErrorBoundary>
+          )}
 
           {activeSection === 'state-engine' && (
-            <CurrentStateWorkstation
-              initialSymbol={selectedSymbol}
-              onSelectStock={handleSelectStock}
-            />
+            <ErrorBoundary viewName="CurrentStateWorkstation">
+              <CurrentStateWorkstation
+                initialSymbol={selectedSymbol}
+                onSelectStock={handleSelectStock}
+              />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'decision-engine' && (
-            <DecisionIntelligenceView
-              initialSymbol={selectedSymbol}
-              onSelectStock={handleSelectStock}
-            />
+            <ErrorBoundary viewName="DecisionIntelligenceView">
+              <DecisionIntelligenceView
+                initialSymbol={selectedSymbol}
+                onSelectStock={handleSelectStock}
+              />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'fundamental' && (
-            <FundamentalAnalysisView onSelectStock={handleSelectStock} />
+            <ErrorBoundary viewName="FundamentalAnalysisView">
+              <FundamentalAnalysisView onSelectStock={handleSelectStock} />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'broker' && (
-            <BrokerAnalysisView onSelectStock={handleSelectStock} />
+            <ErrorBoundary viewName="BrokerAnalysisView">
+              <BrokerAnalysisView onSelectStock={handleSelectStock} />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'setups' && (
-            <SetupsView onSelectStock={handleSelectStock} />
+            <ErrorBoundary viewName="SetupsView">
+              <SetupsView onSelectStock={handleSelectStock} />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'watchlist' && (
-            <WatchlistView onSelectStock={handleSelectStock} />
+            <ErrorBoundary viewName="WatchlistView">
+              <WatchlistView onSelectStock={handleSelectStock} />
+            </ErrorBoundary>
           )}
 
           {activeSection === 'portfolio' && (
-            <PortfolioView onSelectStock={handleSelectStock} />
+            <ErrorBoundary viewName="PortfolioView">
+              <PortfolioView onSelectStock={handleSelectStock} />
+            </ErrorBoundary>
           )}
 
-          {activeSection === 'risk' && <RiskView />}
+          {activeSection === 'risk' && (
+            <ErrorBoundary viewName="RiskView">
+              <RiskView />
+            </ErrorBoundary>
+          )}
 
           {activeSection === 'research' && (
-            <TradeJournalView onSelectStock={handleSelectStock} />
+            <ErrorBoundary viewName="TradeJournalView">
+              <TradeJournalView onSelectStock={handleSelectStock} />
+            </ErrorBoundary>
           )}
 
-          {activeSection === 'data' && <DataArchitectureView />}
+          {activeSection === 'data' && (
+            <ErrorBoundary viewName="DataArchitectureView">
+              <DataArchitectureView />
+            </ErrorBoundary>
+          )}
 
-          {activeSection === 'settings' && <SettingsView />}
+          {activeSection === 'settings' && (
+            <ErrorBoundary viewName="SettingsView">
+              <SettingsView />
+            </ErrorBoundary>
+          )}
         </main>
       </div>
     </div>
