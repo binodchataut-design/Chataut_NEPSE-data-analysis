@@ -60,6 +60,7 @@ export interface HistoricalPriceRecord {
 }
 
 export interface MarketIndexRecord {
+  id?: string;
   symbol: string;
   name: string;
   currentValue: number;
@@ -76,9 +77,11 @@ export interface MarketIndexRecord {
   date?: string;
   index_id?: string;
   close?: number;
+  [key: string]: any;
 }
 
 export interface DailyMarketStatistics {
+  id?: string;
   date: string;
   totalTurnover: number;
   totalVolume: number;
@@ -86,6 +89,7 @@ export interface DailyMarketStatistics {
   advancers: number;
   decliners: number;
   unchanged: number;
+  [key: string]: any;
 }
 
 export interface RawFinancialStatement {
@@ -104,19 +108,34 @@ export interface BrokerTransactionRecord {
   sellQty: number;
 }
 
-export interface ValidationSummary {
-  status: string;
-  totalChecks: number;
+export interface ValidationIssue {
+  severity: 'CRITICAL' | 'ERROR' | 'WARNING' | 'INFO';
+  entity: string;
+  recordIdentifier: string;
+  code: string;
+  message: string;
 }
 
-export interface ValidationIssue {
-  id: string;
-  message: string;
+export interface ValidationSummary {
+  status: 'VALID' | 'WARNINGS' | 'INVALID';
+  totalChecks?: number;
+  totalRecordsChecked: number;
+  validRecordsCount: number;
+  criticalCount: number;
+  errorCount: number;
+  warningCount: number;
+  issues: ValidationIssue[];
 }
 
 export interface DataImportResult {
   success: boolean;
   message?: string;
+  completedAt: string;
+  recordsProcessed: number;
+  importedCount: number;
+  warningCount: number;
+  rejectedCount: number;
+  errors?: string[];
 }
 
 export class LiveDataSourceUnavailableError extends Error {

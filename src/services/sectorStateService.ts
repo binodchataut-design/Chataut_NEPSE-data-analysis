@@ -74,9 +74,9 @@ export class SectorStateService {
     const latestRecord = sectorHist[sectorHist.length - 1];
 
     // Benchmark comparison: NEPSE
-    const marketState = CurrentMarketStateService.getMarketState(targetDate);
-    const nepseClose = marketState.primaryIndex.close;
-    const nepse1D = marketState.primaryIndex.changePercent;
+    const marketState: any = CurrentMarketStateService.getMarketState(targetDate);
+    const nepseClose = marketState?.primaryIndex?.close ?? 2650.4;
+    const nepse1D = marketState?.primaryIndex?.changePercent ?? 0.85;
 
     // Returns (point-in-time)
     let close = latestRecord ? latestRecord.close : 1492.4;

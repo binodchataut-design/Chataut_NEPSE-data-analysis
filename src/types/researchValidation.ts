@@ -16,9 +16,12 @@ export type PriceMode = 'SPLIT_ADJUSTED' | 'RAW';
 
 export interface ShortHistoryWarning {
   symbol: string;
-  reason: string;
+  reason?: string;
   totalBars?: number;
+  [key: string]: any;
 }
+
+export type EvidenceGrade = 'A' | 'B' | 'C' | 'D' | 'F' | string;
 
 export interface ResearchValidationResult {
   valid: boolean;

@@ -13,7 +13,7 @@
  *   preserving mock testing behavior byte-for-byte.
  */
 
-import { supabase } from '../lib/supabaseClient';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { providerRegistry } from '../providers/providerRegistry';
 import { OHLCVBar } from '../types/technicalIndicators';
 import { CompanyMaster, MarketIndexRecord } from '../types/dataInfrastructure';

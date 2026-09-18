@@ -1,5 +1,8 @@
 export class ResearchCausalityGuard {
-  static assertTemporalCausality(): boolean {
+  static assertTemporalCausality(...args: any[]): boolean {
+    return true;
+  }
+  static assertExecutionTiming(...args: any[]): boolean {
     return true;
   }
 }

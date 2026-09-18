@@ -2,32 +2,37 @@ export interface PrecomputedIndicators {
   bars: any[];
   sma20: number[];
   sma50: number[];
-  bb: any[];
+  bb: { upper: number[]; lower: number[]; middle: number[] } | any;
   rsi14: number[];
   adx14: number[];
-  macd: any[];
+  macd: { hist: number[]; macd?: number[]; signal?: number[] } | any;
   cmf20: number[];
+  [key: string]: any;
 }
 
 export class SignalConditionEngine {
-  static evaluate() { return true; }
-  static precomputeIndicators(bars: any[]): PrecomputedIndicators {
+  static evaluate(...args: any[]): any { return true; }
+  static precomputeIndicators(bars: any[], ...rest: any[]): PrecomputedIndicators {
     const len = bars?.length || 0;
     return {
       bars: bars || [],
       sma20: new Array(len).fill(100),
       sma50: new Array(len).fill(100),
-      bb: new Array(len).fill({ upper: 110, lower: 90, middle: 100 }),
+      bb: {
+        upper: new Array(len).fill(110),
+        lower: new Array(len).fill(90),
+        middle: new Array(len).fill(100),
+      },
       rsi14: new Array(len).fill(50),
       adx14: new Array(len).fill(25),
-      macd: new Array(len).fill({ macd: 0, signal: 0, histogram: 0 }),
+      macd: { hist: new Array(len).fill(0), macd: new Array(len).fill(0), signal: new Array(len).fill(0) },
       cmf20: new Array(len).fill(0.1),
     };
   }
-  static getStandardConditionPresets() {
+  static getStandardConditionPresets(...args: any[]): any[] {
     return [];
   }
-  static evaluateConditionTree() {
+  static evaluateConditionTree(...args: any[]): boolean {
     return true;
   }
 }

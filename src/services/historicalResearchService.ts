@@ -516,7 +516,7 @@ class HistoricalResearchService {
       `# Win Rate: ${result.winRate}% (95% CI: ${result.confidenceInterval.lower.toFixed(1)}% - ${result.confidenceInterval.upper.toFixed(1)}%)`,
       `# Expectancy: ${result.expectancy}% per trade`,
       `# Profit Factor: ${result.profitFactor !== null ? result.profitFactor : 'N/A'}`,
-      `# Max Drawdown: ${result.drawdown.maxDrawdownPercent}%`,
+      `# Max Drawdown: ${(result.drawdown as any)?.maxDrawdownPercent ?? result.drawdown ?? 0}%`,
       `# Zero Look-Ahead Bias Verified: TRUE`,
       ``
     ].join('\n');
