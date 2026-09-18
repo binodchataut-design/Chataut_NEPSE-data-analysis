@@ -1,6 +1,0 @@
-{
-  "name": "NEPSE Research & Trading Intelligence",
-  "description": "Personal NEPSE research and trading intelligence system with historical backtesting, feature probability laboratory, corporate actions integrity, survivorship bias tracking, execution reality, and statistical robustness validation.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
