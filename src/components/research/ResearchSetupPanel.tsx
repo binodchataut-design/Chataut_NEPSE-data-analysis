@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Settings2,
   Calendar,
@@ -15,7 +15,10 @@ import {
   TargetStopParams,
   TransactionCostModel
 } from '../../types/historicalResearch';
+import { CompanyMaster } from '../../types/dataInfrastructure';
 import { normalizedCompanies, normalizedSectors } from '../../data/normalizedMasterData';
+import { getCachedCompanies } from '../../data/liveBarsCache';
+import { dataService } from '../../services/dataService';
 
 interface ResearchSetupPanelProps {
   config: ResearchRunConfig;
@@ -30,6 +33,38 @@ export const ResearchSetupPanel: React.FC<ResearchSetupPanelProps> = ({
   onRunResearch,
   isLoading
 }) => {
+  // Mirror the same cache-first, mock-fallback logic historicalResearchService.ts already uses,
+  // so the dropdown options always match what a backtest run will actually search.
+  const [companies, setCompanies] = useState<CompanyMaster[]>(() => {
+    const live = getCachedCompanies();
+    return live.length > 0 ? live : normalizedCompanies;
+  });
+  const [isLiveUniverse, setIsLiveUniverse] = useState<boolean>(() => getCachedCompanies().length > 0);
+
+  useEffect(() => {
+    const refresh = () => {
+      const live = getCachedCompanies();
+      if (live.length > 0) {
+        setCompanies(live);
+        setIsLiveUniverse(true);
+      } else {
+        setCompanies(normalizedCompanies);
+        setIsLiveUniverse(false);
+      }
+    };
+    refresh();
+    const unsubscribe = dataService.subscribe(refresh);
+    return () => unsubscribe();
+  }, []);
+
+  // Live companies carry sector as a plain name string in sector_id (see SupabaseDataProvider.fetchCompanies);
+  // mock companies use normalizedSectors' own id/name pairs. Derive whichever set matches the active source.
+  const sectorOptions: { id: string; name: string }[] = isLiveUniverse
+    ? Array.from(new Set(companies.map(c => c.sector_id || c.sector || 'Others')))
+        .sort()
+        .map(name => ({ id: name, name }))
+    : normalizedSectors.map(s => ({ id: s.id, name: s.name }));
+
   return (
     <div className="bg-[#111622] border border-slate-800 rounded-lg p-4 space-y-4">
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -55,7 +90,9 @@ export const ResearchSetupPanel: React.FC<ResearchSetupPanelProps> = ({
             }
             className="w-full bg-[#0d111a] border border-slate-700 rounded px-2.5 py-1.5 text-slate-200 focus:border-cyan-500 outline-none"
           >
-            <option value="ALL_NEPSE">Entire NEPSE Universe (Listed Scrips)</option>
+            <option value="ALL_NEPSE">
+              Entire NEPSE Universe ({companies.length} Listed Scrips{isLiveUniverse ? '' : ', MOCK'})
+            </option>
             <option value="SECTOR">Sector Basket</option>
             <option value="SINGLE">Single Scrip Benchmark</option>
           </select>
@@ -64,13 +101,15 @@ export const ResearchSetupPanel: React.FC<ResearchSetupPanelProps> = ({
         {/* Dynamic Selector based on Universe */}
         {config.universe === 'SINGLE' && (
           <div>
-            <label className="block text-slate-400 mb-1 font-medium">Select Scrip</label>
+            <label className="block text-slate-400 mb-1 font-medium">
+              Select Scrip {!isLiveUniverse && <span className="text-amber-400">(Mock Data)</span>}
+            </label>
             <select
-              value={config.selectedSymbol || 'CHCL'}
+              value={config.selectedSymbol || companies[0]?.symbol || 'CHCL'}
               onChange={e => onChange({ selectedSymbol: e.target.value })}
               className="w-full bg-[#0d111a] border border-slate-700 rounded px-2.5 py-1.5 text-slate-200 focus:border-cyan-500 outline-none"
             >
-              {normalizedCompanies.map(c => (
+              {companies.map(c => (
                 <option key={c.id} value={c.symbol}>
                   {c.symbol} — {c.company_name}
                 </option>
@@ -81,13 +120,15 @@ export const ResearchSetupPanel: React.FC<ResearchSetupPanelProps> = ({
 
         {config.universe === 'SECTOR' && (
           <div>
-            <label className="block text-slate-400 mb-1 font-medium">Select Sector</label>
+            <label className="block text-slate-400 mb-1 font-medium">
+              Select Sector {!isLiveUniverse && <span className="text-amber-400">(Mock Data)</span>}
+            </label>
             <select
-              value={config.selectedSector || normalizedSectors[0]?.id}
+              value={config.selectedSector || sectorOptions[0]?.id}
               onChange={e => onChange({ selectedSector: e.target.value })}
               className="w-full bg-[#0d111a] border border-slate-700 rounded px-2.5 py-1.5 text-slate-200 focus:border-cyan-500 outline-none"
             >
-              {normalizedSectors.map(s => (
+              {sectorOptions.map(s => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
